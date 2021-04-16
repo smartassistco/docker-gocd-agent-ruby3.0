@@ -17,7 +17,7 @@ version: "3.8"
 
 services:
   gocd-agent-ruby3.0:
-    image: smartassist/gocd-agent-ruby3.0:v21.2.0
+    image: smartassist/gocd-agent-ruby3.0:v${GOCD_AGENT_VERSION}
     restart: unless-stopped
     env_file: .env
 ```
@@ -25,7 +25,7 @@ services:
 - To modify further, reference in your Dockerfile:
 
 ```dockerfile
-FROM smartassist/gocd-agent-ruby3.0:v21.2.0
+FROM smartassist/gocd-agent-ruby3.0:v${GOCD_AGENT_VERSION}
 ```
 
 ## Contents
@@ -39,5 +39,5 @@ FROM smartassist/gocd-agent-ruby3.0:v21.2.0
 | Runtime    | Version |
 |------------|---------|
 | OS      | Debian 10 (Buster)  |
-| GoCD agent | 21.2.0 |
-| Ruby       | 3.0.1  |
+| GoCD agent | ${GOCD_AGENT_VERSION} |
+| Ruby       | ${RUBY_VERSION_FULL}  |
