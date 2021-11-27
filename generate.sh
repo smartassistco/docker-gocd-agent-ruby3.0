@@ -1,15 +1,20 @@
 #!/bin/bash
 
-echo "Creating workspace"
+GOCD_AGENT_VERSION=21.3.0
+RUBY_VERSION=3.0
+NODE_VERSION=16
 
-mkdir -p tmp output
+echo "Creating temp directory"
+
+mkdir -p tmp
 
 echo "Downloading source files"
 
 wget -q -O tmp/curl.dockerfile "https://github.com/docker-library/buildpack-deps/raw/master/debian/buster/curl/Dockerfile"
 wget -q -O tmp/scm.dockerfile "https://github.com/docker-library/buildpack-deps/raw/master/debian/buster/scm/Dockerfile"
 wget -q -O tmp/buildpack-deps.dockerfile "https://github.com/docker-library/buildpack-deps/raw/master/debian/buster/Dockerfile"
-wget -q -O tmp/ruby.dockerfile "https://github.com/docker-library/ruby/raw/master/$RUBY_VERSION_MAJOR/buster/Dockerfile"
+wget -q -O tmp/ruby.dockerfile "https://github.com/docker-library/ruby/raw/master/$RUBY_VERSION/buster/Dockerfile"
+wget -q -O tmp/node.dockerfile "https://github.com/nodejs/docker-node/raw/main/$NODE_VERSION/buster/Dockerfile"
 
 echo "Creating Dockerfile"
 
@@ -30,15 +35,12 @@ echo "Creating Dockerfile"
   echo -e "\\n#\\n# Ruby\\n#\\n"
   sed "/^FROM.*/d; /^CMD.*/d" tmp/ruby.dockerfile
 
+  echo -e "\\n#\\n# Node\\n#\\n"
+  sed "/^FROM.*/d; /^CMD.*/d; /^COPY docker-entrypoint.sh.*/d; /^ENTRYPOINT.*/d; s/id[[:space:]]1000/id 1001/g" tmp/node.dockerfile
+
   echo -e "\\n# Change user back to go"
   echo "USER go"
 
-} >output/Dockerfile
+} >Dockerfile
 
 echo "Dockerfile generated"
-
-echo "Updating README"
-
-envsubst <templates/README.md >output/README.md
-
-echo "README generated"
